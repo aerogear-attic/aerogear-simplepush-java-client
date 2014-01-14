@@ -66,6 +66,7 @@ public class SimplePushClient {
           case NOTIFICATION:
             final NotificationMessageImpl notificationMessage = JsonUtil.fromJson(message, NotificationMessageImpl.class);
             for (Ack ack : notificationMessage.getAcks()) {
+              send(JsonUtil.toJson(ack));
               listener.onMessage(ack);
             }
             break;

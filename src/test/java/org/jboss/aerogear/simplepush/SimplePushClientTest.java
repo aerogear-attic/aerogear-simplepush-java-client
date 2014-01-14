@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -54,13 +55,15 @@ public class SimplePushClientTest {
   @Test
   public void testSimpleServerCommunication() throws InterruptedException {
     //given
-    SimplePushClient client = new SimplePushClient("ws://localhost:" + PORT);
+    final SimplePushClient client = new SimplePushClient("ws://localhost:" + PORT);
     final CountDownLatch registerLatch = new CountDownLatch(1);
 
     //when
+    client.connect();
     client.register(new RegistrationListener() {
       @Override
       public void onRegistered(String channelId, String pushEndpoint) {
+        assertEquals(channelId, client.getChannelId(0));
         registerLatch.countDown();
       }
     });
@@ -93,6 +96,7 @@ public class SimplePushClientTest {
       fail("onMessage should have been called");
     }
 
-    client.unregister();
+    client.unregister(client.getChannelId(0));
+    client.close();
   }
 }

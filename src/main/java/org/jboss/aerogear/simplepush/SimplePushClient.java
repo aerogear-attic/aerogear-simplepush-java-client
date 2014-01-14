@@ -27,6 +27,8 @@ import org.jboss.aerogear.simplepush.util.UUIDUtil;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Simple Push Client
@@ -36,7 +38,7 @@ public class SimplePushClient {
   private final WebSocketClient websocketClient;
   private RegistrationListener registrationListener;
   private MessageListener listener;
-  private String channelId;
+  private List<String> registeredChannels = new ArrayList<>();
 
   public SimplePushClient(String simplePushServerURL) {
     final URI serverUri;
@@ -68,7 +70,8 @@ public class SimplePushClient {
             }
             break;
           case UNREGISTER:
-            SimplePushClient.this.channelId = null;
+            UnregisterMessageImpl unregisterMessage = JsonUtil.fromJson(message, UnregisterMessageImpl.class);
+            registeredChannels.remove(unregisterMessage.getChannelId());
             break;
         }
       }
@@ -84,19 +87,30 @@ public class SimplePushClient {
     };
   }
 
-  public void register(RegistrationListener registrationListener) {
-    this.registrationListener = registrationListener;
+  public void connect() {
     websocketClient.connect();
     final HelloMessageImpl helloMessage = new HelloMessageImpl(UUIDUtil.newUAID());
     websocketClient.send(JsonUtil.toJson(helloMessage));
-    channelId = UUIDUtil.newUAID();
+  }
+
+  public String getChannelId(int index) {
+    return registeredChannels.get(index);
+  }
+
+  public void register(RegistrationListener registrationListener) {
+    this.registrationListener = registrationListener;
+    String channelId = UUIDUtil.newUAID();
+    registeredChannels.add(channelId);
     final String register = JsonUtil.toJson(new RegisterMessageImpl(channelId));
     websocketClient.send(register);
   }
 
-  public void unregister() {
+  public void unregister(String channelId) {
     UnregisterMessageImpl unregisterMessage = new UnregisterMessageImpl(channelId);
     websocketClient.send(JsonUtil.toJson(unregisterMessage));
+  }
+
+  public void close() {
     try {
       websocketClient.closeBlocking();
     } catch (InterruptedException e) {

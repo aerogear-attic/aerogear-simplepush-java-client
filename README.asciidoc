@@ -5,7 +5,7 @@ Java lib for receiving simple push messages using web sockets
 
 Usage example:
 
-[source,java]
+//[source,java]
 ----
-include::src/test/example/Usage.java[lines=24..47]
+include::src/test/example/Usage.java[]
 ----

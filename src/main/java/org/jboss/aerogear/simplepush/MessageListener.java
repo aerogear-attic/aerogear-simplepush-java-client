@@ -16,9 +16,11 @@
  */
 package org.jboss.aerogear.simplepush;
 
+import org.jboss.aerogear.simplepush.protocol.Ack;
+
 /**
  * Listener fired when a push notification has been received
  */
 public interface MessageListener {
-  void onMessage();
+  void onMessage(Ack ack);
 }

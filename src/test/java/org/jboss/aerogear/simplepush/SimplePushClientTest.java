@@ -16,6 +16,7 @@
  */
 package org.jboss.aerogear.simplepush;
 
+import org.jboss.aerogear.simplepush.protocol.Ack;
 import org.jboss.aerogear.simplepush.protocol.impl.AckImpl;
 import org.jboss.aerogear.simplepush.protocol.impl.NotificationMessageImpl;
 import org.jboss.aerogear.simplepush.protocol.impl.json.JsonUtil;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -75,7 +77,9 @@ public class SimplePushClientTest {
     final CountDownLatch messageLatch = new CountDownLatch(1);
     client.addMessageListener(new MessageListener() {
       @Override
-      public void onMessage() {
+      public void onMessage(Ack ack) {
+        assertNotNull(ack);
+        assertNotNull(ack.getVersion());
         messageLatch.countDown();
       }
     });

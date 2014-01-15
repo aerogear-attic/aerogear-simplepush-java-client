@@ -1,3 +1,19 @@
+/**
+ * JBoss, Home of Professional Open Source
+ * Copyright Red Hat, Inc., and individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * 	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.aerogear.simplepush.test;
 
 import org.java_websocket.WebSocket;
@@ -20,52 +36,52 @@ import java.net.UnknownHostException;
  * Test server side implementation of simple push for integration testing.
  */
 public class IntegrationServer extends WebSocketServer {
-  private Logger log = LoggerFactory.getLogger(IntegrationServer.class);
+    private Logger log = LoggerFactory.getLogger(IntegrationServer.class);
 
-  public IntegrationServer(int port) throws UnknownHostException {
-    super(new InetSocketAddress(port));
-  }
-
-  @Override
-  public void onOpen(WebSocket conn, ClientHandshake handshake) {
-    log.info("{} connected", conn.getRemoteSocketAddress().getAddress().getHostAddress());
-  }
-
-  @Override
-  public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-    log.info("{} connection closed", reason);
-  }
-
-  @Override
-  public void onMessage(WebSocket conn, String message) {
-    log.debug("received message {}", message);
-    final MessageType messageType = JsonUtil.parseFrame(message);
-    switch (messageType.getMessageType()) {
-      case HELLO:
-        send(JsonUtil.toJson(new HelloResponseImpl(UUIDUtil.newUAID())));
-        break;
-      case REGISTER:
-        final RegisterMessageImpl registerMessage = JsonUtil.fromJson(message, RegisterMessageImpl.class);
-        final StatusImpl status = new StatusImpl(200, "N/A");
-        final String channelId = registerMessage.getChannelId();
-        final RegisterResponseImpl response = new RegisterResponseImpl(channelId, status, "ws://localhost:" + getPort());
-        send(JsonUtil.toJson(response));
-        break;
-      case UNREGISTER:
-        break;
+    public IntegrationServer(int port) throws UnknownHostException {
+        super(new InetSocketAddress(port));
     }
-  }
 
-  public void send(String text) {
-    synchronized (this) {
-      for (WebSocket socket : connections()) {
-        socket.send(text);
-      }
+    @Override
+    public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        log.info("{} connected", conn.getRemoteSocketAddress().getAddress().getHostAddress());
     }
-  }
 
-  @Override
-  public void onError(WebSocket conn, Exception ex) {
-    throw new RuntimeException("onError occurred", ex);
-  }
+    @Override
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        log.info("{} connection closed", reason);
+    }
+
+    @Override
+    public void onMessage(WebSocket conn, String message) {
+        log.debug("received message {}", message);
+        final MessageType messageType = JsonUtil.parseFrame(message);
+        switch (messageType.getMessageType()) {
+        case HELLO:
+            send(JsonUtil.toJson(new HelloResponseImpl(UUIDUtil.newUAID())));
+            break;
+        case REGISTER:
+            final RegisterMessageImpl registerMessage = JsonUtil.fromJson(message, RegisterMessageImpl.class);
+            final StatusImpl status = new StatusImpl(200, "N/A");
+            final String channelId = registerMessage.getChannelId();
+            final RegisterResponseImpl response = new RegisterResponseImpl(channelId, status, "ws://localhost:" + getPort());
+            send(JsonUtil.toJson(response));
+            break;
+        case UNREGISTER:
+            break;
+        }
+    }
+
+    public void send(String text) {
+        synchronized (this) {
+            for (WebSocket socket : connections()) {
+                socket.send(text);
+            }
+        }
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        throw new RuntimeException("onError occurred", ex);
+    }
 }

@@ -20,13 +20,10 @@ import org.jboss.aerogear.simplepush.protocol.Ack;
 import org.jboss.aerogear.simplepush.protocol.impl.AckImpl;
 import org.jboss.aerogear.simplepush.protocol.impl.NotificationMessageImpl;
 import org.jboss.aerogear.simplepush.protocol.impl.json.JsonUtil;
-import org.jboss.aerogear.simplepush.test.IntegrationServer;
+import org.jboss.aerogear.simplepush.server.AbstractSimplePushServer;
 import org.jboss.aerogear.simplepush.util.UUIDUtil;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -35,27 +32,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
- * Integration test for the SimplePushClient
+ * Integration server for the SimplePushClient
  */
-public class SimplePushClientTest {
-    private static final int PORT = 7778;
-    private IntegrationServer integrationServer;
+public abstract class AbstractSimplePushClientTest {
 
-    @Before
-    public void setup() throws IOException {
-        integrationServer = new IntegrationServer(PORT);
-        integrationServer.start();
-    }
-
-    @After
-    public void tearDown() throws IOException, InterruptedException {
-        integrationServer.stop();
-    }
+    protected AbstractSimplePushServer simplePushServer;
 
     @Test
     public void testSimpleServerCommunication() throws InterruptedException {
         //given
-        final SimplePushClient client = new SimplePushClient("ws://localhost:" + PORT);
+        final SimplePushClient client = new SimplePushClient("ws://localhost:9999/echo");
         final CountDownLatch registerLatch = new CountDownLatch(1);
 
         //when
@@ -86,7 +72,8 @@ public class SimplePushClientTest {
                 messageLatch.countDown();
             }
         });
-        integrationServer.send(JsonUtil.toJson(new NotificationMessageImpl(new AckImpl(UUIDUtil.newUAID(), 1))));
+
+        client.getWebsocketClient().sendText(JsonUtil.toJson(new NotificationMessageImpl(new AckImpl(UUIDUtil.newUAID(), 1))));
 
         //wait for the communication to happen
         messageLatch.await(1000, TimeUnit.MILLISECONDS);

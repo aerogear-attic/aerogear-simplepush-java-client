@@ -106,9 +106,9 @@ public class SimplePushClient {
      */
     public void register(RegistrationListener registrationListener) {
         this.registrationListener = registrationListener;
-        String channelId = UUIDUtil.newUAID();
-        registeredChannels.add(channelId);
-        final String register = JsonUtil.toJson(new RegisterMessageImpl(channelId));
+        String channelID = UUIDUtil.newUAID();
+        registeredChannels.add(channelID);
+        final String register = JsonUtil.toJson(new RegisterMessageImpl(channelID));
         websocketClient.sendText(register);
     }
 
@@ -131,5 +131,9 @@ public class SimplePushClient {
 
     public void addMessageListener(MessageListener listener) {
         this.listener = listener;
+    }
+
+    public SimpleWebSocketClient getWebsocketClient(){
+        return websocketClient;
     }
 }

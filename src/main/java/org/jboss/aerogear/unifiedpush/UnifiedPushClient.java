@@ -16,10 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
-import org.java_websocket.util.Base64;
+import net.iharder.Base64;
 import org.jboss.aerogear.simplepush.protocol.impl.json.JsonUtil;
-
-import javax.ws.rs.core.MediaType;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -86,8 +84,8 @@ public class UnifiedPushClient {
             conn.setDoOutput(true);
             conn.setUseCaches(false);
             conn.setRequestProperty("Authorization", "Basic " + credentials);
-            conn.setRequestProperty("Content-Type", MediaType.APPLICATION_JSON);
-            conn.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
+            conn.setRequestProperty("Content-Type",  "application/json");
+            conn.setRequestProperty("Accept", "application/json");
             conn.setRequestMethod(method);
             if (body != null) {
                 conn.setFixedLengthStreamingMode(body.length);

@@ -16,9 +16,9 @@
  */
 package org.jboss.aerogear.simplepush;
 
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.drafts.Draft_10;
-import org.java_websocket.handshake.ServerHandshake;
+
+import net.wessendorf.websocket.SimpleWebSocketClient;
+import net.wessendorf.websocket.WebSocketHandlerAdapter;
 import org.jboss.aerogear.simplepush.protocol.Ack;
 import org.jboss.aerogear.simplepush.protocol.MessageType;
 import org.jboss.aerogear.simplepush.protocol.impl.*;
@@ -35,22 +35,19 @@ import java.util.List;
  */
 public class SimplePushClient {
 
-    private final WebSocketClient websocketClient;
+    private final SimpleWebSocketClient websocketClient;
     private RegistrationListener registrationListener;
     private MessageListener listener;
     private List<String> registeredChannels = new ArrayList<>();
 
     public SimplePushClient(String simplePushServerURL) {
-        final URI serverUri;
+
         try {
-            serverUri = new URI(simplePushServerURL);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException("invalid simplePushEndpoint url", e);
-        }
-        websocketClient = new WebSocketClient(serverUri, new Draft_10()) {
+        websocketClient = new SimpleWebSocketClient(simplePushServerURL);
+        websocketClient.setWebSocketHandler(new WebSocketHandlerAdapter() {
 
             @Override
-            public void onOpen(ServerHandshake handshake) {
+            public void onOpen() {
             }
 
             @Override
@@ -66,7 +63,7 @@ public class SimplePushClient {
                 case NOTIFICATION:
                     final NotificationMessageImpl notificationMessage = JsonUtil.fromJson(message, NotificationMessageImpl.class);
                     for (Ack ack : notificationMessage.getAcks()) {
-                        send(JsonUtil.toJson(ack));
+                        websocketClient.sendText(JsonUtil.toJson(ack));
                         listener.onMessage(ack);
                     }
                     break;
@@ -76,16 +73,11 @@ public class SimplePushClient {
                     break;
                 }
             }
-
-            @Override
-            public void onClose(int code, String reason, boolean remote) {
-            }
-
-            @Override
-            public void onError(Exception ex) {
-                throw new RuntimeException("error in communication channel with simple push server", ex);
-            }
-        };
+        });
+        }
+        catch (URISyntaxException e) {
+             throw new IllegalArgumentException("simplePushServerURL is an invalid URL");
+        }
     }
 
     /**
@@ -94,7 +86,7 @@ public class SimplePushClient {
     public void connect() {
         websocketClient.connect();
         final HelloMessageImpl helloMessage = new HelloMessageImpl(UUIDUtil.newUAID());
-        websocketClient.send(JsonUtil.toJson(helloMessage));
+        websocketClient.sendText(JsonUtil.toJson(helloMessage));
     }
 
     /**
@@ -117,7 +109,7 @@ public class SimplePushClient {
         String channelId = UUIDUtil.newUAID();
         registeredChannels.add(channelId);
         final String register = JsonUtil.toJson(new RegisterMessageImpl(channelId));
-        websocketClient.send(register);
+        websocketClient.sendText(register);
     }
 
     /**
@@ -127,18 +119,14 @@ public class SimplePushClient {
      */
     public void unregister(String channelId) {
         UnregisterMessageImpl unregisterMessage = new UnregisterMessageImpl(channelId);
-        websocketClient.send(JsonUtil.toJson(unregisterMessage));
+        websocketClient.sendText(JsonUtil.toJson(unregisterMessage));
     }
 
     /**
      * Close the communication
      */
     public void close() {
-        try {
-            websocketClient.closeBlocking();
-        } catch (InterruptedException e) {
-            // ignore
-        }
+        websocketClient.close();
     }
 
     public void addMessageListener(MessageListener listener) {

@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.simplepush.server.undertow;
 
-import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.undertow.Undertow;
 import io.undertow.websockets.WebSocketConnectionCallback;
 import io.undertow.websockets.core.*;

@@ -16,7 +16,6 @@
  */
 package org.jboss.aerogear.simplepush.server.tyrus;
 
-import io.undertow.websockets.core.WebSockets;
 import org.jboss.aerogear.simplepush.protocol.MessageType;
 import org.jboss.aerogear.simplepush.protocol.impl.*;
 import org.jboss.aerogear.simplepush.protocol.impl.json.JsonUtil;

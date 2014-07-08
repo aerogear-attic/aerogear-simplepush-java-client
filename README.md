@@ -1,7 +1,16 @@
 Aerogear Simple push Java
 =========================
 
-Java lib for receiving simple push messages using web sockets
+Java lib for receiving SimplePush messages using WebSocket
+
+In your ```pom.xml``` file add the following:
+```xml
+<dependency>
+  <groupId>org.jboss.aerogear</groupId>
+  <artifactId>aerogear-simplepush-java-client</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
 
 Usage example:
 
@@ -29,3 +38,4 @@ Usage example:
     }
   });
 ```
+

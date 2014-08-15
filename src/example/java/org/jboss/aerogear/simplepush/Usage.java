@@ -14,6 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.jboss.aerogear.simplepush;
+
 import org.jboss.aerogear.simplepush.MessageListener;
 import org.jboss.aerogear.simplepush.RegistrationListener;
 import org.jboss.aerogear.simplepush.SimplePushClient;
@@ -82,7 +84,7 @@ public class Usage {
         });
 
         JLabel panel = new JLabel();
-        panel.setIcon(new ImageIcon(Usage.class.getResource("/logo.jpeg")));
+        panel.setIcon(new ImageIcon(Usage.class.getResource("./logo.jpeg")));
         frame.add(panel);
         frame.setSize(400, 200);
         frame.setVisible(true);

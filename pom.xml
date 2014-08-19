@@ -54,14 +54,14 @@ limitations under the License.
         <maven.compiler.argument.target>1.7</maven.compiler.argument.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aerogear-simplepush-protocol.version>0.11.0</aerogear-simplepush-protocol.version>
-        <simple-client.version>0.5.0</simple-client.version>
+        <simple-client.version>0.6.0</simple-client.version>
         <junit.version>4.11</junit.version>
         <slf4j.version>1.7.5</slf4j.version>
         <base64.version>2.3.8</base64.version>
-        <netty-all.version>4.0.19.Final</netty-all.version>
-        <undertow.version>1.1.0.Beta1</undertow.version>
-        <vertx.version>2.1.1</vertx.version>
-        <tyrus.version>1.7</tyrus.version>
+        <netty-all.version>4.0.23.Final</netty-all.version>
+        <undertow.version>1.1.0.Beta6</undertow.version>
+        <vertx.version>2.1.2</vertx.version>
+        <tyrus.version>1.8.1</tyrus.version>
     </properties>
 
     <dependencies>

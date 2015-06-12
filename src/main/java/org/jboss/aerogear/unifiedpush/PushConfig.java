@@ -25,7 +25,6 @@ public class PushConfig {
     private String deviceToken;
     private String alias;
     private List<String> categories;
-    private String simplePushEndpoint;
     private String operatingSystem;
     private String osVersion;
     private String deviceType;
@@ -56,14 +55,6 @@ public class PushConfig {
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
-    }
-
-    public String getSimplePushEndpoint() {
-        return simplePushEndpoint;
-    }
-
-    public void setSimplePushEndpoint(String simplePushEndpoint) {
-        this.simplePushEndpoint = simplePushEndpoint;
     }
 
     public String getOperatingSystem() {

@@ -39,7 +39,7 @@ public class UnifiedPushClientTest {
             }
         };
         PushConfig config = new PushConfig();
-        config.setSimplePushEndpoint(simplePushEndpoint);
+        config.setDeviceToken(simplePushEndpoint);
 
         //when
         client.register(config);

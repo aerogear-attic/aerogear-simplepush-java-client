@@ -48,8 +48,7 @@ public class Usage {
             @Override
             public void onRegistered(String channelId, String simplePushEndPoint) {
                 final PushConfig config = new PushConfig();
-                config.setDeviceToken(channelId);
-                config.setSimplePushEndpoint(simplePushEndPoint);
+                config.setDeviceToken(simplePushEndPoint);
 
                 config.setAlias("john");
                 config.setCategories(Arrays.asList("lead"));

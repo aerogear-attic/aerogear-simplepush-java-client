@@ -95,6 +95,10 @@ public class UnifiedPushClient {
             } else {
                 conn.connect();
             }
+            int responseCode = conn.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {                   
+                throw new RuntimeException(String.format("could not open url %s, response msg is %s",url,conn.getResponseMessage()));
+            }
         } catch (IOException e) {
             throw new RuntimeException("could not register simple end point with unified push server", e);
         } finally {
